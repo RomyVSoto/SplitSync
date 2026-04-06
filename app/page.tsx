@@ -1,65 +1,165 @@
-import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
+import {
+  Avatar,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col justify-center gap-40 py-20 mx-20">
+      <section className="flex flex-col gap-16 items-center">
+        <div className="flex flex-col gap-4">
+          <h1 className="font-manrope font-extrabold text-6xl text-center max-w-xl">
+            Split expenses. <span className="text-[#3525CD]">No drama.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <span className="font-inter font-normal text-lg text-[#475569] text-center max-w-xl">
+            Create a group, add expenses, and watch balances update in real
+            time. The editorial workspace for your group finances.
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <span>
+          <button className="bg-[#3525CD] font-inter font-medium text-white px-10 py-5 rounded-lg shadow-xl shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 hover:scale-101 transition-all cursor-pointer">
+            Create a group
+          </button>
+        </span>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <div>
+          <span className="font-manrope font-semibold text-2xl">
+            Active groups
+          </span>
         </div>
-      </main>
+        <div className="flex justify-between gap-6">
+          <div className="w-full bg-white flex flex-col gap-8 p-6 rounded-2xl">
+            <div className="flex items-center justify-between">
+              <span className="font-manrope font-bold text-2xl text-[#1A1A2E]">
+                European Summer &#39;24
+              </span>
+              <AvatarGroup className="scale-80">
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/maxleiter.png"
+                    alt="@maxleiter"
+                  />
+                  <AvatarFallback>LR</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/evilrabbit.png"
+                    alt="@evilrabbit"
+                  />
+                  <AvatarFallback>ER</AvatarFallback>
+                </Avatar>
+                <AvatarGroupCount>+2</AvatarGroupCount>
+              </AvatarGroup>
+            </div>
+            <span className="flex flex-col gap-1">
+              <p className="font-inter font-normal text-xs text-[#64748B]">
+                Total group spent
+              </p>
+              <p className="font-manrope font-extrabold text-2xl tracking-tight">
+                $1,450.00
+              </p>
+            </span>
+            <span className="flex flex-col gap-2">
+              <Separator className="bg-gray-50" />
+              <div className="flex gap-8 justify-between items-center">
+                <div className="flex gap-8">
+                  <span className="flex flex-col">
+                    <p className="font-inter font-base text-xs text-[#94A3B8] tracking-widest">
+                      ACTIVITY
+                    </p>
+                    <p className="font-inter font-medium text-sm text-[#1A1A2E]">
+                      2 hours ago
+                    </p>
+                  </span>
+                  <span className="flex flex-col">
+                    <p className="font-inter font-base text-xs text-[#94A3B8] tracking-widest">
+                      TRANSACTIONS
+                    </p>
+                    <p className="font-inter font-medium text-sm text-[#1A1A2E]">
+                      12 expenses
+                    </p>
+                  </span>
+                </div>
+                <div className="bg-[#F5F2FF] text-[#3525CD] p-2 rounded-lg">
+                  <ArrowRight />
+                </div>
+              </div>
+            </span>
+          </div>
+          <div className="w-full bg-white flex flex-col gap-8 p-6 rounded-2xl">
+            <div className="flex items-center justify-between">
+              <span className="font-manrope font-bold text-2xl text-[#1A1A2E]">
+                742 Evergreen Terrace
+              </span>
+              <AvatarGroup className="scale-80">
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/evilrabbit.png"
+                    alt="@evilrabbit"
+                  />
+                  <AvatarFallback>ER</AvatarFallback>
+                </Avatar>
+                <AvatarGroupCount>+1</AvatarGroupCount>
+              </AvatarGroup>
+            </div>
+            <span className="flex flex-col gap-1">
+              <p className="font-inter font-normal text-xs text-[#64748B]">
+                Total group spent
+              </p>
+              <p className="font-manrope font-extrabold text-2xl tracking-tight">
+                $2,840.40
+              </p>
+            </span>
+            <span className="flex flex-col gap-2">
+              <Separator className="bg-gray-50" />
+              <div className="flex gap-8 justify-between items-center">
+                <div className="flex gap-8">
+                  <span className="flex flex-col">
+                    <p className="font-inter font-base text-xs text-[#94A3B8] tracking-widest">
+                      ACTIVITY
+                    </p>
+                    <p className="font-inter font-medium text-sm text-[#1A1A2E]">
+                      5 mins ago
+                    </p>
+                  </span>
+                  <span className="flex flex-col">
+                    <p className="font-inter font-base text-xs text-[#94A3B8] tracking-widest">
+                      TRANSACTIONS
+                    </p>
+                    <p className="font-inter font-medium text-sm text-[#1A1A2E]">
+                      8 expenses
+                    </p>
+                  </span>
+                </div>
+                <div className="bg-[#F5F2FF] text-[#3525CD] p-2 rounded-lg">
+                  <ArrowRight />
+                </div>
+              </div>
+            </span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
