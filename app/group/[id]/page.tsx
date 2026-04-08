@@ -16,13 +16,14 @@ import {
 import useExpense from "@/hooks/useExpense";
 import { useParams } from "next/navigation";
 
-const pieData = [
-  { name: "Food", value: 240 },
-  { name: "Transport", value: 120 },
-  { name: "Entertainment", value: 80 },
-  { name: "Shopping", value: 60 },
-  { name: "Other", value: 40 },
-];
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString("en", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+}
 
 const pieColors = {
   Food: "#4F46E5",
@@ -32,22 +33,51 @@ const pieColors = {
   Other: "#94A3B8",
 };
 
-const total = pieData.reduce((sum, item) => sum + item.value, 0);
-
-const dailyData = [
-  { day: "Mon", total: 120 },
-  { day: "Tue", total: 240 },
-  { day: "Wed", total: 80 },
-  { day: "Thu", total: 320 },
-  { day: "Fri", total: 150 },
-  { day: "Sat", total: 90 },
-  { day: "Sun", total: 200 },
-];
-
 export default function GroupPage() {
   const params = useParams();
   const groupId = params.id as string;
   const { expenses, isExpensesLoading } = useExpense(groupId);
+
+  const topSpender = expenses?.reduce(
+    (acc, expense) => {
+      acc[expense.paid_by] = (acc[expense.paid_by] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  const topSpenderName = topSpender
+    ? Object.entries(topSpender).sort((a, b) => b[1] - a[1])[0]?.[0]
+    : "—";
+
+  const categoryData =
+    expenses?.reduce(
+      (acc, expense) => {
+        const existing = acc.find((item) => item.name === expense.category);
+        if (existing) {
+          existing.value += Number(expense.amount);
+        } else {
+          acc.push({ name: expense.category, value: Number(expense.amount) });
+        }
+        return acc;
+      },
+      [] as { name: string; value: number }[],
+    ) ?? [];
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const dailyData = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - i));
+    const dayName = days[date.getDay()];
+    const total =
+      expenses
+        ?.filter(
+          (e) => new Date(e.created_at).toDateString() === date.toDateString(),
+        )
+        .reduce((sum, e) => sum + Number(e.amount), 0) ?? 0;
+    return { day: dayName, total };
+  });
 
   return (
     <div className="flex gap-5 px-20 py-10">
@@ -63,35 +93,39 @@ export default function GroupPage() {
             <div>Loading...</div>
           ) : (
             expenses?.map((expense) => (
-            <div key={expense.id} className="w-full flex justify-between gap-20 items-center p-5 rounded-lg bg-white">
-              <div className="flex gap-5">
-                <div className="p-3 rounded-lg bg-[#3525CD]/10">
-                  <Utensils className="font-extrabold w-5 h-5 text-[#3525CD]" />
+              <div
+                key={expense.id}
+                className="w-full flex justify-between gap-20 items-center p-5 rounded-lg bg-white"
+              >
+                <div className="flex gap-5">
+                  <div className="p-3 rounded-lg bg-[#3525CD]/10">
+                    <Utensils className="font-extrabold w-5 h-5 text-[#3525CD]" />
+                  </div>
+                  <div>
+                    <span className="font-manrope font-semibold text-lg text-[#1A1A2E]">
+                      {expense.description}
+                    </span>
+                    <span className="flex gap-2">
+                      <p className="font-inter font-medium text-xs text-[#3525CD] bg-[#E8E5FF] px-1 rounded-full">
+                        {expense.category}
+                      </p>
+                      <p className="font-inter font-normal text-xs text-[#94A3B8]">
+                        Paid by {expense.paid_by} • {formatDate(expense.created_at)}
+                      </p>
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className="font-manrope font-semibold text-lg text-[#1A1A2E]">
-                    {expense.description}
+                <div className="flex flex-col">
+                  <span className="font-manrope font-extrabold text-xl text-[#4F46E5]">
+                    ${expense.amount}
                   </span>
-                  <span className="flex gap-2">
-                    <p className="font-inter font-medium text-xs text-[#3525CD] bg-[#E8E5FF] px-1 rounded-full">
-                      {expense.category}
-                    </p>
-                    <p className="font-inter font-normal text-xs text-[#94A3B8]">
-                      Paid by {expense.paid_by} • {expense.created_at}
-                    </p>
+                  <span className="font-inter font-normal text-xs text-[#94A3B8] tracking-tight">
+                    Split equally (4)
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-manrope font-extrabold text-xl text-[#4F46E5]">
-                  ${expense.amount}
-                </span>
-                <span className="font-inter font-normal text-xs text-[#94A3B8] tracking-tight">
-                  Split equally (4)
-                </span>
-              </div>
-            </div>
-          )))}
+            ))
+          )}
         </section>
       </div>
       <div className="w-1/2 space-y-5">
@@ -110,7 +144,7 @@ export default function GroupPage() {
                 Top Spender
               </span>
               <span className="font-inter font-semibold text-md text-[#94A3B8]">
-                Romy
+                {topSpenderName}
               </span>
             </div>
             <div className="flex justify-between">
@@ -130,7 +164,7 @@ export default function GroupPage() {
           <span className="flex justify-center">
             <PieChart width={300} height={300}>
               <Pie
-                data={pieData}
+                data={categoryData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -143,7 +177,7 @@ export default function GroupPage() {
                   position="center"
                   className="font-bold text-lg"
                 />
-                {pieData.map((entry, index) => (
+                {categoryData.map((entry, index) => (
                   <Cell
                     key={index}
                     fill={pieColors[entry.name as keyof typeof pieColors]}
