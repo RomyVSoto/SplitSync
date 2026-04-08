@@ -3,6 +3,7 @@ import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
+import Providers from "@/components/Providers";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -27,8 +28,10 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", "font-sans", inter.variable, manrope.variable)}
     >
       <body className="bg-[#FCF8FF] min-h-full flex flex-col">
-        <Header />
-        {children}
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

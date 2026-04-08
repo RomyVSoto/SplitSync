@@ -10,7 +10,6 @@ export default function useGroups() {
     name: z.string().min(1, "Group name is required"),
   });
 
-  const result = groupSchema.safeParse({ name: "" });
 
   async function fetchGroups() {
     const { data, error } = await supabase.from("groups").select("*");

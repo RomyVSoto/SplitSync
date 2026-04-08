@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "lucide-react";
 import {
   Dialog,
@@ -6,6 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import  useGroups  from "@/hooks/useGroups";
 
 interface CreateGroupModalProps {
   isOpen: boolean;
@@ -16,6 +18,9 @@ export default function CreateGroupModal({
   isOpen,
   onClose,
 }: CreateGroupModalProps) {
+  const { createGroup, isPending } = useGroups();
+  const [form, setForm] = useState({name: ""})
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md flex flex-col gap-4 bg-white rounded-xl shadow-xl py-5">
@@ -40,6 +45,7 @@ export default function CreateGroupModal({
                 type="text"
                 placeholder="e.g. Juan Dolio Roadtrip"
                 className="font-inter bg-[#E2E0FC] text-sm text-[#777587] px-2 py-3 rounded-md focus:outline-none focus:text-[#464555] focus:ring-1 focus:ring-[#4F46E5]"
+                onChange={(e) => setForm({...form, name: e.target.value})}
               />
             </div>
 
@@ -61,6 +67,9 @@ export default function CreateGroupModal({
               <button
                 type="submit"
                 className="w-full font-inter font-medium text-sm text-white bg-[#3525CD] rounded-md px-10 py-3 shadow-lg shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 transition-all cursor-pointer"
+                onClick={() => {
+                  createGroup(form.name);
+                }}
               >
                 Create Group
               </button>

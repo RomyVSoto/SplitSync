@@ -13,6 +13,8 @@ import {
   ResponsiveContainer,
   XAxis,
 } from "recharts";
+import useGroups from "@/hooks/useGroups";
+import { useParams } from "next/navigation";
 
 const pieData = [
   { name: "Food", value: 240 },
@@ -42,7 +44,7 @@ const dailyData = [
   { day: "Sun", total: 200 },
 ];
 
-export default function Home() {
+export default function GroupPage() {
   return (
     <div className="flex gap-5 px-20 py-10">
       <div className="w-full space-y-3">

@@ -1,21 +1,32 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { MoveLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
+import useGroups from "@/hooks/useGroups";
+import Link from "next/link";
 
 export default function Header() {
   const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false);
   const pathName = usePathname();
   const isGroupPage = pathName.startsWith("/group");
-
+  const { groups } = useGroups();
+  const params = useParams();
+  const group = groups?.find((g) => g.id === params.id);
   return (
     <header className="bg-[#FCF8FF]/80 flex items-center justify-between px-20 py-4 shadow-md/2">
       <span className="font-manrope font-semibold text-xl tracking-tight text-[#4F46E5]">
         SplitSync
       </span>
-      {isGroupPage && <span>Group Name</span>}
+      {isGroupPage && groups && (
+        <span className="flex gap-2 items-center">
+          <Link href="/">
+            <MoveLeft className="w-5 h-5 hover:text-[#4338CA] hover:scale-110 transition-all cursor-pointer" />
+          </Link>
+          {group?.name}
+        </span>
+      )}
 
       <span className="flex items-center gap-4">
         <button
