@@ -1,3 +1,5 @@
+'use client'
+
 import { Separator } from "@/components/ui/separator";
 import {
   Avatar,
@@ -7,8 +9,12 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import CreateGroupModal from "@/components/CreateGroupModal";
 
 export default function Home() {
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false);
+
   return (
     <div className="flex flex-col justify-center gap-40 py-20 mx-20">
       <section className="flex flex-col gap-16 items-center">
@@ -21,19 +27,22 @@ export default function Home() {
             time. The editorial workspace for your group finances.
           </span>
         </div>
-        <span>
-          <button className="bg-[#3525CD] font-inter font-medium text-white px-10 py-5 rounded-lg shadow-xl shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 hover:scale-101 transition-all cursor-pointer">
-            Create a group
-          </button>
-        </span>
+        <button
+          className="bg-[#3525CD] font-inter font-medium text-white px-10 py-5 rounded-lg shadow-xl shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 hover:scale-101 transition-all cursor-pointer"
+          onClick={() => setIsGroupModalOpen(true)}
+        >
+          Create a group
+        </button>
+        <CreateGroupModal
+          isOpen={isGroupModalOpen}
+          onClose={() => setIsGroupModalOpen(false)}
+        />
       </section>
 
       <section className="flex flex-col gap-8">
-        <div>
-          <span className="font-manrope font-semibold text-2xl">
-            Active groups
-          </span>
-        </div>
+        <span className="font-manrope font-semibold text-2xl">
+          Active groups
+        </span>
         <div className="flex justify-between gap-6">
           <div className="w-full bg-white flex flex-col gap-8 p-6 rounded-2xl">
             <div className="flex items-center justify-between">
