@@ -71,7 +71,7 @@ export default function CreateGroupModal({
                   createGroup(form.name);
                 }}
               >
-                Create Group
+                {isPending ? "Creating..." : "Create Group"}
               </button>
             </div>
           </form>

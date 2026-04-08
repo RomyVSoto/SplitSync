@@ -53,12 +53,15 @@ export default function useExpense(groupId: string) {
       const { error } = await supabase
         .from("expenses")
         .insert({
+          group_id: groupId,
           description,
           amount,
           category,
           paid_by,
         })
         .eq("group_id", groupId);
+
+      console.log("groupId:", groupId);
 
       if (error) throw error;
     },

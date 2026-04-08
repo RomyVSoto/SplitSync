@@ -3,12 +3,14 @@
 import { MoveLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
+import ExpenseModal from "./ExpenseModal";
 import { usePathname, useParams } from "next/navigation";
 import useGroups from "@/hooks/useGroups";
 import Link from "next/link";
 
 export default function Header() {
   const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState<boolean>(false);
   const pathName = usePathname();
   const isGroupPage = pathName.startsWith("/group");
   const { groups } = useGroups();
@@ -41,9 +43,16 @@ export default function Header() {
         />
         {isGroupPage && (
           <div>
-            <button className="bg-[#4F46E5] hover:bg-[#4338CA] font-inter font-medium text-sm text-white px-4 py-2 rounded-lg cursor-pointer transition-colors">
+            <button
+              className="bg-[#4F46E5] hover:bg-[#4338CA] font-inter font-medium text-sm text-white px-4 py-2 rounded-lg cursor-pointer transition-colors"
+              onClick={() => setIsExpenseModalOpen(true)}
+            >
               Add Expense
             </button>
+            <ExpenseModal
+              isOpen={isExpenseModalOpen}
+              onClose={() => setIsExpenseModalOpen(false)}
+            />
           </div>
         )}
       </span>

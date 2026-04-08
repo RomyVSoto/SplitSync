@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
   XAxis,
 } from "recharts";
-import useGroups from "@/hooks/useGroups";
+import useExpense from "@/hooks/useExpense";
 import { useParams } from "next/navigation";
 
 const pieData = [
@@ -45,44 +45,53 @@ const dailyData = [
 ];
 
 export default function GroupPage() {
+  const params = useParams();
+  const groupId = params.id as string;
+  const { expenses, isExpensesLoading } = useExpense(groupId);
+
   return (
     <div className="flex gap-5 px-20 py-10">
       <div className="w-full space-y-3">
         <section className="flex gap-2 items-center">
           <h1 className="font-manrope font-extrabold text-2xl">Expenses</h1>
           <p className="font-inter font-semibold text-xs text-[#3525CD] text-center rounded-xl bg-[#3525CD]/10 px-2 py-1">
-            24 Total
+            {expenses?.length} Total
           </p>
         </section>
         <section className="flex flex-col gap-4">
-          <div className="w-full flex justify-between gap-20 items-center p-5 rounded-lg bg-white">
-            <div className="flex gap-5">
-              <div className="p-3 rounded-lg bg-[#3525CD]/10">
-                <Utensils className="font-extrabold w-5 h-5 text-[#3525CD]" />
+          {isExpensesLoading ? (
+            <div>Loading...</div>
+          ) : (
+            expenses?.map((expense) => (
+            <div key={expense.id} className="w-full flex justify-between gap-20 items-center p-5 rounded-lg bg-white">
+              <div className="flex gap-5">
+                <div className="p-3 rounded-lg bg-[#3525CD]/10">
+                  <Utensils className="font-extrabold w-5 h-5 text-[#3525CD]" />
+                </div>
+                <div>
+                  <span className="font-manrope font-semibold text-lg text-[#1A1A2E]">
+                    {expense.description}
+                  </span>
+                  <span className="flex gap-2">
+                    <p className="font-inter font-medium text-xs text-[#3525CD] bg-[#E8E5FF] px-1 rounded-full">
+                      {expense.category}
+                    </p>
+                    <p className="font-inter font-normal text-xs text-[#94A3B8]">
+                      Paid by {expense.paid_by} • {expense.created_at}
+                    </p>
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="font-manrope font-semibold text-lg text-[#1A1A2E]">
-                  Dinner at SBG Santo Domingo
+              <div className="flex flex-col">
+                <span className="font-manrope font-extrabold text-xl text-[#4F46E5]">
+                  ${expense.amount}
                 </span>
-                <span className="flex gap-2">
-                  <p className="font-inter font-medium text-xs text-[#3525CD] bg-[#E8E5FF] px-1 rounded-full">
-                    FOOD
-                  </p>
-                  <p className="font-inter font-normal text-xs text-[#94A3B8]">
-                    Paid by Romy • Yesterday, 8:45 PM
-                  </p>
+                <span className="font-inter font-normal text-xs text-[#94A3B8] tracking-tight">
+                  Split equally (4)
                 </span>
               </div>
             </div>
-            <div className="flex flex-col">
-              <span className="font-manrope font-extrabold text-xl text-[#4F46E5]">
-                $248.50
-              </span>
-              <span className="font-inter font-normal text-xs text-[#94A3B8] tracking-tight">
-                Split equally (4)
-              </span>
-            </div>
-          </div>
+          )))}
         </section>
       </div>
       <div className="w-1/2 space-y-5">
@@ -92,7 +101,7 @@ export default function GroupPage() {
               Total Expenses
             </span>
             <span className="font-inter font-bold text-xl text-[#4F46E5]">
-              $1,242.50
+              ${expenses?.reduce((total, expense) => total + expense.amount, 0)}
             </span>
           </div>
           <div className="space-y-1">
@@ -101,7 +110,7 @@ export default function GroupPage() {
                 Top Spender
               </span>
               <span className="font-inter font-semibold text-md text-[#94A3B8]">
-                Juan
+                Romy
               </span>
             </div>
             <div className="flex justify-between">
@@ -130,7 +139,7 @@ export default function GroupPage() {
                 outerRadius={80}
               >
                 <Label
-                  value={`$${total}`}
+                  value="Total"
                   position="center"
                   className="font-bold text-lg"
                 />
