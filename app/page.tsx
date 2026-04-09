@@ -73,7 +73,7 @@ export default function Home() {
                 </p>
                 <p className="font-manrope font-extrabold text-2xl text-[#3525CD] tracking-tight">
                   $
-                  {group.expenses.reduce((sum, e) => sum + Number(e.amount), 0)}
+                  {group.expenses.reduce((sum: number, e: { amount: string | number; }) => sum + Number(e.amount), 0)}
                 </p>
               </span>
               <span className="flex flex-col gap-2">

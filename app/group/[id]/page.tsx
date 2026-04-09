@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import useExpense from "@/hooks/useExpense";
 import { useParams } from "next/navigation";
+import { Key } from "react";
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en", {
@@ -47,8 +48,8 @@ export default function GroupPage() {
   );
 
   const topSpenderName = topSpender
-    ? Object.entries(topSpender).sort((a, b) => b[1] - a[1])[0]?.[0]
-    : "—";
+  ? Object.entries(topSpender).sort((a, b) => (b[1] as number) - (a[1] as number))[0]?.[0]
+  : "—";
 
   const uniqueMembers = new Set(expenses?.map((expense) => expense.paid_by))
     .size;
@@ -56,7 +57,7 @@ export default function GroupPage() {
   const categoryData =
     expenses?.reduce(
       (acc, expense) => {
-        const existing = acc.find((item) => item.name === expense.category);
+        const existing = acc.find((item: { name: any; }) => item.name === expense.category);
         if (existing) {
           existing.value += Number(expense.amount);
         } else {
@@ -190,7 +191,7 @@ export default function GroupPage() {
                   position="center"
                   className="font-bold text-lg"
                 />
-                {categoryData.map((entry, index) => (
+                {categoryData.map((entry: { name: string; }, index: Key | null | undefined) => (
                   <Cell
                     key={index}
                     fill={pieColors[entry.name as keyof typeof pieColors]}
