@@ -47,18 +47,18 @@ export default function Home() {
           {groups?.map((group) => (
             <div key={group.id} className="w-full bg-white flex flex-col gap-8 p-6 rounded-2xl">
             <div className="flex items-center justify-between">
-              <span className="font-manrope font-bold text-2xl text-[#1A1A2E]">
+              <span className="font-manrope font-bold text-2xl text-[#3525CD]">
                 {group.name}
               </span>
               <AvatarGroup className="scale-80">
-                <AvatarGroupCount><p className="p-1 bg-gray-200">x</p>members</AvatarGroupCount>
+                <AvatarGroupCount className="text-[#3525CD]">4</AvatarGroupCount>
               </AvatarGroup>
             </div>
             <span className="flex flex-col gap-1">
               <p className="font-inter font-normal text-xs text-[#64748B]">
                 Total group spent
               </p>
-              <p className="font-manrope font-extrabold text-2xl tracking-tight">
+              <p className="font-manrope font-extrabold text-2xl text-[#3525CD] tracking-tight">
                 $1,450.00
               </p>
             </span>

@@ -1,15 +1,16 @@
 import { createClient } from "@/lib/supabase/client";
 import * as z from "zod";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function useGroups() {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const groupSchema = z.object({
     name: z.string().min(1, "Group name is required"),
   });
-
 
   async function fetchGroups() {
     const { data, error } = await supabase.from("groups").select("*");
@@ -43,11 +44,37 @@ export default function useGroups() {
     },
   });
 
+  const { mutate: joinGroup, error: joinError, isPending: isJoining } = useMutation({
+    mutationFn: async ({
+      invite_code,
+      name,
+    }: {
+      invite_code: string;
+      name: string;
+    }) => {
+      const { data, error } = await supabase
+        .from("groups")
+        .select("*")
+        .eq("invite_code", invite_code)
+        .single();
+
+      if (error || !data) throw new Error("Group not found");
+      localStorage.setItem("userName", name);
+      return data;
+    },
+    onSuccess: (data) => {
+      router.push(`/group/${data.id}`);
+    },
+  });
+
   return {
     groupSchema,
     groups,
+    joinGroup,
     isLoading,
     createGroup,
     isPending,
+    isJoining,
+    joinError,
   };
 }
