@@ -16,18 +16,22 @@ interface ExpenseModalProps {
 export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
   const params = useParams();
   const groupId = params.id as string;
-  const { createExpense, isPending } = useExpense(groupId);
+  const { createExpense, isPending, expenseError } = useExpense(groupId);
   const [form, setForm] = useState({
     description: "",
     amount: 0,
     category: "",
-    paid_by: "",
+    paid_by: localStorage.getItem("userName") || "",
   });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md flex flex-col gap-4 bg-white rounded-xl shadow-xl py-5">
         <DialogHeader className="px-2">
+          {expenseError && (
+            <p className="text-red-500 text-xs">{expenseError.message}</p>
+          )}
+
           <DialogTitle className="font-manrope font-semibold text-lg text-[#1A1A2E]">
             Add a Expense
           </DialogTitle>
@@ -86,9 +90,10 @@ export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Juan"
+                placeholder="You"
+                disabled
                 className="font-inter bg-[#F5F2FF] text-sm text-[#777587] px-2 py-3 rounded-md focus:outline-none focus:text-[#464555] focus:ring-1 focus:ring-[#4F46E5]"
-                onChange={(e) => setForm({ ...form, paid_by: e.target.value })}
+                value={form.paid_by}
               />
             </div>
 

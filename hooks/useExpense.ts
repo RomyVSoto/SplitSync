@@ -34,7 +34,7 @@ export default function useExpense(groupId: string) {
     enabled: !!groupId,
   });
 
-  const { mutate: createExpense, isPending } = useMutation({
+  const { mutate: createExpense, isPending, error: expenseError } = useMutation({
     mutationFn: async ({
       description,
       amount,
@@ -74,7 +74,6 @@ export default function useExpense(groupId: string) {
 
   const channelName = `expenses-${groupId}`;
   
-  // Elimina el canal si ya existe antes de crear uno nuevo
   supabase.removeChannel(supabase.channel(channelName));
 
   const channel = supabase
@@ -98,13 +97,14 @@ export default function useExpense(groupId: string) {
     channel.unsubscribe();
     supabase.removeChannel(channel);
   };
-}, [groupId]);
+}, [groupId, queryClient]);
 
   return {
     expenseSchema,
     expenses,
     isExpensesLoading,
     isPending,
+    expenseError,
     createExpense,
   };
 }

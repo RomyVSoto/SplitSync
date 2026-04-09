@@ -13,7 +13,7 @@ export default function useGroups() {
   });
 
   async function fetchGroups() {
-    const { data, error } = await supabase.from("groups").select("*");
+    const { data, error } = await supabase.from("groups").select("*, expenses(*)");
     if (error) throw error;
     return data;
   }

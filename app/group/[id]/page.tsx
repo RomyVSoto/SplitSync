@@ -21,8 +21,8 @@ function formatDate(dateString: string) {
     month: "short",
     day: "numeric",
     hour: "2-digit",
-    minute: "2-digit"
-  })
+    minute: "2-digit",
+  });
 }
 
 const pieColors = {
@@ -49,6 +49,9 @@ export default function GroupPage() {
   const topSpenderName = topSpender
     ? Object.entries(topSpender).sort((a, b) => b[1] - a[1])[0]?.[0]
     : "—";
+
+  const uniqueMembers = new Set(expenses?.map((expense) => expense.paid_by))
+    .size;
 
   const categoryData =
     expenses?.reduce(
@@ -81,7 +84,7 @@ export default function GroupPage() {
 
   return (
     <div className="flex gap-5 px-20 py-10">
-      <div className="w-full space-y-3">
+      <div className="w-full space-y-6">
         <section className="flex gap-2 items-center">
           <h1 className="font-manrope font-extrabold text-2xl">Expenses</h1>
           <p className="font-inter font-semibold text-xs text-[#3525CD] text-center rounded-xl bg-[#3525CD]/10 px-2 py-1">
@@ -95,7 +98,7 @@ export default function GroupPage() {
             expenses?.map((expense) => (
               <div
                 key={expense.id}
-                className="w-full flex justify-between gap-20 items-center p-5 rounded-lg bg-white"
+                className="w-full flex justify-between gap-20 items-center p-6 rounded-lg bg-white"
               >
                 <div className="flex gap-5">
                   <div className="p-3 rounded-lg bg-[#3525CD]/10">
@@ -110,7 +113,11 @@ export default function GroupPage() {
                         {expense.category}
                       </p>
                       <p className="font-inter font-normal text-xs text-[#94A3B8]">
-                        Paid by {expense.paid_by} • {formatDate(expense.created_at)}
+                        Paid by{" "}
+                        {expense.paid_by === localStorage.getItem("userName")
+                          ? "You"
+                          : expense.paid_by}{" "}
+                        • {formatDate(expense.created_at)}
                       </p>
                     </span>
                   </div>
@@ -119,13 +126,19 @@ export default function GroupPage() {
                   <span className="font-manrope font-extrabold text-xl text-[#4F46E5]">
                     ${expense.amount}
                   </span>
-                  <span className="font-inter font-normal text-xs text-[#94A3B8] tracking-tight">
-                    Split equally (4)
+                  <span className="font-inter font-normal text-xs text-[#94A3B8] text-right tracking-tight">
+                    Value
                   </span>
                 </div>
               </div>
             ))
           )}
+        </section>
+        <section className="flex justify-center items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="font-inter text-xs text-[#94A3B8]">
+            Live updates enabled
+          </span>
         </section>
       </div>
       <div className="w-1/2 space-y-5">
@@ -143,16 +156,16 @@ export default function GroupPage() {
               <span className="font-manrope font-semibold text-md text-[#1A1A2E]">
                 Top Spender
               </span>
-              <span className="font-inter font-semibold text-md text-[#94A3B8]">
+              <span className="font-inter font-medium text-md text-[#94A3B8]">
                 {topSpenderName}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="font-manrope font-semibold text-md text-[#1A1A2E]">
-                Members
+                Contributors
               </span>
               <span className="font-inter font-semibold text-md text-[#4F46E5] bg-[#F8F9FA] px-3 rounded-lg">
-                4
+                {uniqueMembers}
               </span>
             </div>
           </div>
