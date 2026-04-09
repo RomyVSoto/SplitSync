@@ -1,9 +1,13 @@
+"use client";
+
+import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import * as z from "zod";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
+const supabase = createClient();
+
 export default function useExpense(groupId: string) {
-  const supabase = createClient();
   const queryClient = useQueryClient();
 
   const expenseSchema = z.object({
@@ -50,18 +54,13 @@ export default function useExpense(groupId: string) {
       });
       if (!result.success) throw new Error(result.error.issues[0].message);
 
-      const { error } = await supabase
-        .from("expenses")
-        .insert({
-          group_id: groupId,
-          description,
-          amount,
-          category,
-          paid_by,
-        })
-        .eq("group_id", groupId);
-
-      console.log("groupId:", groupId);
+      const { error } = await supabase.from("expenses").insert({
+        group_id: groupId,
+        description,
+        amount,
+        category,
+        paid_by,
+      });
 
       if (error) throw error;
     },
@@ -69,6 +68,37 @@ export default function useExpense(groupId: string) {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
     },
   });
+
+  useEffect(() => {
+  if (!groupId) return;
+
+  const channelName = `expenses-${groupId}`;
+  
+  // Elimina el canal si ya existe antes de crear uno nuevo
+  supabase.removeChannel(supabase.channel(channelName));
+
+  const channel = supabase
+    .channel(channelName)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "expenses",
+        filter: `group_id=eq.${groupId}`,
+      },
+      () => {
+        queryClient.invalidateQueries({ queryKey: ["expenses", groupId] });
+      },
+    )
+
+  channel.subscribe();
+
+  return () => {
+    channel.unsubscribe();
+    supabase.removeChannel(channel);
+  };
+}, [groupId]);
 
   return {
     expenseSchema,
