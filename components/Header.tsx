@@ -35,9 +35,7 @@ export default function Header() {
   return (
     <header className="bg-[#FCF8FF]/80 flex items-center justify-between px-4 sm:px-8 md:px-12 lg:px-20 py-4 shadow-md/2">
       <Link href="/">
-        <span
-          className="font-manrope font-semibold text-xl tracking-tight text-[#4F46E5]"
-        >
+        <span className="font-manrope font-semibold text-xl tracking-tight text-[#4F46E5]">
           SplitSync
         </span>
       </Link>
@@ -52,7 +50,7 @@ export default function Header() {
             onClick={handleCopy}
             className="hidden sm:flex items-center"
           >
-            <span className="flex gap-1 items-center p-1 font-manrope text-xs text-[#94A3B8] hover:text-[#3525CD] transition cursor-pointer">
+            <span className={`flex gap-1 items-center p-1 font-manrope text-xs hover:text-[#3525CD] transition cursor-pointer ${copied ? "text-[#10B981]" : "text-[#94A3B8]"}`}>
               {group?.invite_code} <Copy className="w-4 h-4" />
             </span>
           </button>

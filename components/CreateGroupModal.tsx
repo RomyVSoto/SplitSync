@@ -19,7 +19,7 @@ export default function CreateGroupModal({
   isOpen,
   onClose,
 }: CreateGroupModalProps) {
-  const { createGroupAsync, isPending } = useGroups();
+  const { createGroupAsync, isPending, createGroupError } = useGroups();
   const [form, setForm] = useState({name: ""})
   
   return (
@@ -72,10 +72,7 @@ export default function CreateGroupModal({
                   sileo.promise(() => createGroupAsync(form.name), {
                     loading: { title: "Creating group..." },
                     success: { title: "Group created!" },
-                    error: (err) => ({
-                      title: "Failed to create group",
-                      description: err instanceof Error ? err.message : undefined,
-                    })
+                    error: { title: "Failed to create group", description: createGroupError?.message },
                   }).then(onClose).catch(() => {})
                 }}
               >

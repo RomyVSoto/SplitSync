@@ -17,7 +17,7 @@ interface ExpenseModalProps {
 export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
   const params = useParams();
   const groupId = params.id as string;
-  const { createExpenseAsync, isPending } = useExpense(groupId);
+  const { createExpenseAsync, isPending, expenseError } = useExpense(groupId);
   const [form, setForm] = useState({
     description: "",
     amount: 0,
@@ -116,10 +116,7 @@ export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
                     {
                       loading: { title: "Adding expense..." },
                       success: { title: "Expense added!" },
-                      error: (err) => ({
-                        title: "Failed to add expense",
-                        description: err instanceof Error ? err.message : undefined,
-                      }),
+                      error: { title: "Failed to add expense", description: expenseError?.message },
                     }
                   ).then(onClose).catch(() => {});
                 }}

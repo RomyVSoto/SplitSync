@@ -23,7 +23,7 @@ export default function useGroups() {
     queryFn: fetchGroups,
   });
 
-  const { mutate: createGroup, mutateAsync: createGroupAsync, isPending } = useMutation({
+  const { mutate: createGroup, mutateAsync: createGroupAsync, isPending, error: createGroupError } = useMutation({
     mutationFn: async (name: string) => {
       const invite_code = Math.random()
         .toString(36)
@@ -78,5 +78,6 @@ export default function useGroups() {
     isPending,
     isJoining,
     joinError,
+    createGroupError,
   };
 }

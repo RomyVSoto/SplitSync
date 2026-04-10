@@ -90,10 +90,7 @@ export default function JoinGroupModal({
                     {
                       loading: { title: "Joining group..." },
                       success: { title: "Group joined!" },
-                      error: (err) => ({
-                        title: "Failed to join group",
-                        description: err instanceof Error ? err.message : undefined,
-                      }),
+                      error: { title: "Failed to join group", description: joinError?.message },
                     }
                   ).then(onClose).catch(() => {});
                 }}

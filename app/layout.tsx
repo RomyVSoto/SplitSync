@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { sileo, Toaster } from "sileo";
+import { Toaster } from "sileo";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
 
