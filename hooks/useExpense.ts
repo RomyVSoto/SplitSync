@@ -34,7 +34,7 @@ export default function useExpense(groupId: string) {
     enabled: !!groupId,
   });
 
-  const { mutate: createExpense, isPending, error: expenseError } = useMutation({
+  const { mutate: createExpense, mutateAsync: createExpenseAsync, isPending, error: expenseError } = useMutation({
     mutationFn: async ({
       description,
       amount,
@@ -52,6 +52,7 @@ export default function useExpense(groupId: string) {
         category,
         paid_by,
       });
+
       if (!result.success) throw new Error(result.error.issues[0].message);
 
       const { error } = await supabase.from("expenses").insert({
@@ -62,7 +63,7 @@ export default function useExpense(groupId: string) {
         paid_by,
       });
 
-      if (error) throw error;
+      if (error) throw new Error(error.message);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
@@ -73,7 +74,7 @@ export default function useExpense(groupId: string) {
   if (!groupId) return;
 
   const channelName = `expenses-${groupId}`;
-  
+
   supabase.removeChannel(supabase.channel(channelName));
 
   const channel = supabase
@@ -106,5 +107,6 @@ export default function useExpense(groupId: string) {
     isPending,
     expenseError,
     createExpense,
+    createExpenseAsync,
   };
 }

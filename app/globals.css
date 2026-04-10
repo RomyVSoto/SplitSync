@@ -128,3 +128,8 @@
     @apply font-sans;
   }
 }
+
+
+[data-sileo-toaster] {
+  z-index: 9999 !important;
+}

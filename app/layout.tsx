@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { sileo, Toaster } from "sileo";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
 
@@ -30,6 +31,13 @@ export default function RootLayout({
       <body className="bg-[#FCF8FF] min-h-full flex flex-col">
         <Providers>
           <Header />
+          <Toaster
+            position="top-center"
+            options={{
+              fill: "#F5F2FF",
+              styles: { title: "text-[#3525CD]!" },
+            }}
+          />
           {children}
         </Providers>
       </body>

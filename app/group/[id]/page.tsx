@@ -84,7 +84,7 @@ export default function GroupPage() {
   });
 
   return (
-    <div className="flex gap-5 px-20 py-10">
+    <div className="flex flex-col lg:flex-row gap-5 px-4 sm:px-8 md:px-12 lg:px-20 py-10">
       <div className="w-full space-y-6">
         <section className="flex gap-2 items-center">
           <h1 className="font-manrope font-extrabold text-2xl">Expenses</h1>
@@ -99,7 +99,7 @@ export default function GroupPage() {
             expenses?.map((expense) => (
               <div
                 key={expense.id}
-                className="w-full flex justify-between gap-20 items-center p-6 rounded-lg bg-white"
+                className="w-full flex justify-between gap-4 sm:gap-10 md:gap-20 items-center p-4 sm:p-6 rounded-lg bg-white"
               >
                 <div className="flex gap-5">
                   <div className="p-3 rounded-lg bg-[#3525CD]/10">
@@ -142,7 +142,7 @@ export default function GroupPage() {
           </span>
         </section>
       </div>
-      <div className="w-1/2 space-y-5">
+      <div className="w-full lg:w-1/2 space-y-5">
         <section className="flex flex-col gap-5 p-4 bg-white rounded-lg">
           <div className="flex justify-between">
             <span className="font-manrope font-extrabold text-lg text-[#1A1A2E]">
@@ -175,32 +175,34 @@ export default function GroupPage() {
           <span className="font-manrope font-bold text-lg text-[#1A1A2E]">
             Spending by Category
           </span>
-          <span className="flex justify-center">
-            <PieChart width={300} height={300}>
-              <Pie
-                data={categoryData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-              >
-                <Label
-                  value="Total"
-                  position="center"
-                  className="font-bold text-lg"
-                />
-                {categoryData.map((entry: { name: string; }, index: Key | null | undefined) => (
-                  <Cell
-                    key={index}
-                    fill={pieColors[entry.name as keyof typeof pieColors]}
+          <span className="w-full">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                >
+                  <Label
+                    value="Total"
+                    position="center"
+                    className="font-bold text-lg"
                   />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
+                  {categoryData.map((entry: { name: string; }, index: Key | null | undefined) => (
+                    <Cell
+                      key={index}
+                      fill={pieColors[entry.name as keyof typeof pieColors]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </span>
         </section>
         <section className="flex flex-col gap-6 p-4 bg-white rounded-lg">

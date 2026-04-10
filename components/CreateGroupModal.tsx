@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import  useGroups  from "@/hooks/useGroups";
+import { sileo } from "sileo";
 
 interface CreateGroupModalProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ export default function CreateGroupModal({
   isOpen,
   onClose,
 }: CreateGroupModalProps) {
-  const { createGroup, isPending } = useGroups();
+  const { createGroupAsync, isPending } = useGroups();
   const [form, setForm] = useState({name: ""})
   
   return (
@@ -36,7 +37,7 @@ export default function CreateGroupModal({
         <section className="bg-gray-400/20 p-20 mx-4 rounded-lg" />
 
         <section className="w-full px-5">
-          <form className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-1">
               <label className="font-manrope font-semibold text-xs tracking-widest text-[#3525CD]">
                 GROUP NAME
@@ -68,7 +69,14 @@ export default function CreateGroupModal({
                 type="submit"
                 className="w-full font-inter font-medium text-sm text-white bg-[#3525CD] rounded-md px-10 py-3 shadow-lg shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 transition-all cursor-pointer"
                 onClick={() => {
-                  createGroup(form.name);
+                  sileo.promise(() => createGroupAsync(form.name), {
+                    loading: { title: "Creating group..." },
+                    success: { title: "Group created!" },
+                    error: (err) => ({
+                      title: "Failed to create group",
+                      description: err instanceof Error ? err.message : undefined,
+                    })
+                  }).then(onClose).catch(() => {})
                 }}
               >
                 {isPending ? "Creating..." : "Create Group"}

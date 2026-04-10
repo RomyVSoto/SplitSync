@@ -24,10 +24,10 @@ export default function Home() {
   const uniqueMembers = new Set(groups?.flatMap((group) => group.expenses.map((e: { paid_by: string }) => e.paid_by))).size
 
   return (
-    <div className="flex flex-col justify-center gap-40 py-20 mx-20">
-      <section className="flex flex-col gap-16 items-center">
+    <div className="flex flex-col justify-center gap-20 lg:gap-40 py-10 md:py-20 mx-4 sm:mx-8 md:mx-12 lg:mx-20">
+      <section className="flex flex-col gap-10 md:gap-16 items-center">
         <div className="flex flex-col gap-4">
-          <h1 className="font-manrope font-extrabold text-6xl text-center max-w-xl">
+          <h1 className="font-manrope font-extrabold text-4xl sm:text-5xl md:text-6xl text-center max-w-xl">
             Split expenses. <span className="text-[#3525CD]">No drama.</span>
           </h1>
           <span className="font-inter font-normal text-lg text-[#475569] text-center max-w-xl">
@@ -51,7 +51,7 @@ export default function Home() {
         <span className="font-manrope font-semibold text-2xl">
           Active groups
         </span>
-        <div className="flex justify-between gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {groups?.map((group) => (
             <div
               key={group.id}

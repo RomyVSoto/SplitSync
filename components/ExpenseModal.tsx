@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import useExpense from "@/hooks/useExpense";
 import { useParams } from "next/navigation";
+import { sileo } from "sileo";
 
 interface ExpenseModalProps {
   isOpen: boolean;
@@ -16,7 +17,7 @@ interface ExpenseModalProps {
 export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
   const params = useParams();
   const groupId = params.id as string;
-  const { createExpense, isPending, expenseError } = useExpense(groupId);
+  const { createExpenseAsync, isPending } = useExpense(groupId);
   const [form, setForm] = useState({
     description: "",
     amount: 0,
@@ -28,17 +29,13 @@ export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md flex flex-col gap-4 bg-white rounded-xl shadow-xl py-5">
         <DialogHeader className="px-2">
-          {expenseError && (
-            <p className="text-red-500 text-xs">{expenseError.message}</p>
-          )}
-
           <DialogTitle className="font-manrope font-semibold text-lg text-[#1A1A2E]">
             Add a Expense
           </DialogTitle>
         </DialogHeader>
 
         <section className="w-full px-2">
-          <form className="flex flex-col gap-6">
+          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-1">
               <label className="font-manrope font-semibold text-xs tracking-widest text-[#3525CD]">
                 DESCRIPTION
@@ -109,12 +106,22 @@ export default function ExpenseModal({ isOpen, onClose }: ExpenseModalProps) {
                 type="submit"
                 className="w-full font-inter font-medium text-sm text-white bg-[#3525CD] rounded-md px-10 py-3 shadow-lg shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 transition-all cursor-pointer"
                 onClick={() => {
-                  createExpense({
-                    category: form.category,
-                    description: form.description,
-                    amount: form.amount,
-                    paid_by: form.paid_by,
-                  });
+                  sileo.promise(
+                    () => createExpenseAsync({
+                      category: form.category,
+                      description: form.description,
+                      amount: form.amount,
+                      paid_by: form.paid_by,
+                    }),
+                    {
+                      loading: { title: "Adding expense..." },
+                      success: { title: "Expense added!" },
+                      error: (err) => ({
+                        title: "Failed to add expense",
+                        description: err instanceof Error ? err.message : undefined,
+                      }),
+                    }
+                  ).then(onClose).catch(() => {});
                 }}
               >
                 {isPending ? "Adding..." : "Add Expense"}

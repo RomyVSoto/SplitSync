@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import useGroups from "@/hooks/useGroups";
+import { sileo } from "sileo";
 
 interface JoinGroupModalProps {
   isOpen: boolean;
@@ -17,7 +18,7 @@ export default function JoinGroupModal({
   isOpen,
   onClose,
 }: JoinGroupModalProps) {
-  const { joinGroup, isJoining, joinError } = useGroups();
+  const { joinGroup, joinGroupAsync, isJoining, joinError } = useGroups();
   const [form, setForm] = useState({
     invite_code: "",
     name: "",
@@ -44,9 +45,6 @@ export default function JoinGroupModal({
             }}
           >
             <div className="flex flex-col gap-1 text-center">
-              {joinError && (
-                <p className="text-red-500 text-xs">{joinError.message}</p>
-              )}
               <label className="font-manrope font-semibold text-xs tracking-widest text-[#3525CD]">
                 INVITE CODE
               </label>
@@ -83,6 +81,22 @@ export default function JoinGroupModal({
               <button
                 type="submit"
                 className="w-full font-inter font-medium text-sm text-white bg-[#3525CD] rounded-md px-10 py-3 shadow-lg shadow-[#3525CD]/30 hover:shadow-[#3525CD]/50 transition-all cursor-pointer"
+                onClick={() => {
+                  sileo.promise(
+                    () => joinGroupAsync({
+                      invite_code: form.invite_code,
+                      name: form.name,
+                    }),
+                    {
+                      loading: { title: "Joining group..." },
+                      success: { title: "Group joined!" },
+                      error: (err) => ({
+                        title: "Failed to join group",
+                        description: err instanceof Error ? err.message : undefined,
+                      }),
+                    }
+                  ).then(onClose).catch(() => {});
+                }}
               >
                 {isJoining ? "Joining..." : "Join Group"}
               </button>
